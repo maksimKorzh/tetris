@@ -1,0 +1,117 @@
+<!-- game praphics element -->
+<div id="tetris"></div>
+
+<!-- TETRIS -->
+<script>
+  // game constants
+  const TETRIS_WIDTH = 12;
+  const TETRIS_HEIGHT = 21;
+  const TETROMINO_SIZE = 4;
+
+  // tetris board
+  var tetris = [
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'
+  ];
+  
+  // tetrominos aka tetris pieces
+  var tetrominos = [
+    '    ' +
+    ' @@ ' +
+    ' @@ ' +
+    '    ',
+    
+    '  @ ' +
+    '  @ ' +
+    '  @ ' +
+    '  @ ',
+    
+    '  @ ' +
+    ' @@ ' +
+    ' @  ' +
+    '    ',
+    
+    ' @  ' +
+    ' @@ ' +
+    '  @ ' +
+    '    ',
+    
+    ' @@ ' +
+    '  @ ' +
+    '  @ ' +
+    '    ',
+    
+    ' @@ ' +
+    ' @  ' +
+    ' @  ' +
+    '    ',
+    
+    '  @ ' +
+    ' @@ ' +
+    '  @ ' +
+    '    '
+  ];
+  
+  // print tetris board to console
+  function printBoard() {
+    // tetris board string
+    tetris_str = ''
+    
+    // loop over board rows
+    for (let row = 0; row < TETRIS_HEIGHT; row++) {
+      // loop over board columns
+      for (let col = 0; col < TETRIS_WIDTH; col++) {
+        // convert row and column coordinates into a square index
+        let square = row * TETRIS_WIDTH + col;
+        
+        // populate tetris board string
+        tetris_str += ' ' + tetris[square];
+      }
+      
+      // append new line to tetris board string
+      tetris_str += '\n';
+    }
+    
+    // print tetris to console
+    console.log(tetris_str);
+  }
+  
+  printBoard();
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,216 @@
+<div id='display'></div>
+<script>  
+  const WIDTH = 12;
+  const HEIGHT = 21;
+  const CELL_SIZE = 30;
+
+  const BACKGROUND_COLOR = 'White';
+  const WALL_COLOR = 'Grey';
+  const TETROMINO_COLOR = 'FireBrick';
+  const REMOVE_COLOR = 'ForestGreen';
+  
+  var posX = 4;
+  var posY = -1;
+  
+  var currentTetromino = Math.floor(Math.random() * 7);
+  var currentShape = 0;
+  
+  board = [
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'
+  ];
+  
+  tetrominos = [
+    '  @ ' +
+    '  @ ' +
+    '  @ ' +
+    '  @ ',
+    
+    '  @ ' +
+    ' @@ ' +
+    ' @  ' +
+    '    ',
+
+    ' @  ' +
+    ' @@ ' +
+    '  @ ' +
+    '    ',
+    
+    '    ' +
+    ' @@ ' +
+    ' @@ ' +
+    '    ',
+    
+    ' @@ ' +
+    ' @  ' +
+    ' @  ' +
+    '    ',
+
+    ' @@ ' +
+    '  @ ' +
+    '  @ ' +
+    '    ',
+    
+    '  @ ' +
+    ' @@ ' +
+    '  @ ' +
+    '    '
+  ];
+  
+  function printBoard() {
+    let board_str = '';
+    for (let row = 0; row < HEIGHT; row++) {
+      for (let col = 0; col < WIDTH; col++) {
+        let square = row * WIDTH + col;
+        board_str += ' ' + board[square];
+      }
+      board_str += '\n';
+    }
+    console.log(board_str);
+  }
+  
+  function rotateTetromino(x, y, shape) {
+    switch(shape) {
+      case 0: return y * 4 + x;              // 0
+      case 1: return 12 + y - (x * 4);       // 90
+      case 2: return 15 - (y * 4) - x;       // 180
+      case 3: return 3 - y + (x * 4);        // 270
+    }
+  }
+  
+  function fitTetromino(type, shape, fitX, fitY) {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        let index = rotateTetromino(col, row, shape);
+        let fitIndex = (fitY * WIDTH + fitX + col) + row * WIDTH;
+        if (board[fitIndex] != ' ' && tetrominos[type][index] != ' ') return 0;
+      }
+    } return 1;
+  }
+  
+  function setTetromino(type, shape, fitX, fitY) {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        let index = rotateTetromino(col, row, shape);
+        let fitIndex = (fitY * WIDTH + fitX + col) + row * WIDTH;
+        if (tetrominos[type][index] != ' ') board[fitIndex] = tetrominos[type][index];
+      }
+    } render();
+  }
+  
+  function update() {
+    render();
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        let index = rotateTetromino(col, row, currentShape);
+        let fitIndex = (posY * WIDTH + posX + col) + row * WIDTH;
+        if (tetrominos[currentTetromino][index] != ' ') document.getElementById(fitIndex).style.backgroundColor = TETROMINO_COLOR;
+      }
+    }
+  }
+    
+  function render() {
+    let colors = {
+      ' ': BACKGROUND_COLOR,
+      '#': WALL_COLOR,
+      '@': TETROMINO_COLOR
+    };
+    
+    let boardHTML = '<table align="center" style="border: 1px solid black;" cellspacing=1>';
+    
+    for (let row = 0; row < HEIGHT; row++) {
+      boardHTML += '<tr>'
+      
+      for (let col = 0; col < WIDTH; col++) {
+        let square = row * WIDTH + col;
+        boardHTML += '<td align="center" id="' + square + 
+            '" bgcolor="' + colors[board[square]] +
+            '" width="' + CELL_SIZE + 'px" height="' + CELL_SIZE +  'px" ' +
+            'px;></td>'
+      }
+      
+      boardHTML += '</tr>'
+    }
+    
+    boardHTML += '</table>'
+    document.getElementById('display').innerHTML = boardHTML;
+  }
+  
+  function removeBlock() {
+    let removedRows = [];
+    
+    for (let row = 0; row < HEIGHT; row++) {
+      block = 0;
+      for (let col = 0; col < WIDTH; col++) {
+        let square = row * WIDTH + col;
+        if (col > 0 && col < WIDTH - 1) {
+          if (board[square] == '@') block++;
+        }
+      } if (block == 10) removedRows.push(row);
+    }
+    
+    // move down all the blocks
+    for (let shiftRow = 0; shiftRow < HEIGHT; shiftRow++) {
+      for (let shiftCol = 1; shiftCol < WIDTH - 1; shiftCol++) {
+        for (let i = removedRows[shiftRow]; i > 0; i--) {
+          let shiftSquare = i * WIDTH + shiftCol;
+          board[shiftSquare] = board[shiftSquare - WIDTH];
+          board[shiftSquare - WIDTH] = ' ';
+        }
+      } 
+    }
+  }
+  
+  function gameLoop() {
+    if (fitTetromino(currentTetromino, currentShape, posX, posY + 1)) posY++;
+    else {
+      setTetromino(currentTetromino, currentShape, posX, posY);
+      removeBlock();
+      currentTetromino = Math.floor(Math.random() * 7);
+      if (posY == 0) return;
+      posX = 4;
+      posY = 0;
+    } update(); setTimeout(gameLoop, 500);
+  }
+  
+  // handle user input
+  document.onkeydown = function(event) {
+    switch (event.keyCode) {
+      case 40: // down
+        if(fitTetromino(currentTetromino, currentShape, posX, posY + 1)) posY++;
+        else setTetromino(currentTetromino, currentShape, posX, posY);
+        break;
+      
+      case 38: // up
+        oldShape = currentShape;
+        if(currentShape < ((currentTetromino > 3) ? 3 : 1)) currentShape++;
+        else currentShape = 0;
+        if(!fitTetromino(currentTetromino, currentShape, posX, posY)) currentShape = oldShape;  
+        break;
+        
+      case 37: if (fitTetromino(currentTetromino, currentShape, posX - 1, posY)) posX--; break;
+      case 39: if (fitTetromino(currentTetromino, currentShape, posX + 1, posY)) posX++; break;
+    } update();
+  }
+  
+  gameLoop();
+</script>
