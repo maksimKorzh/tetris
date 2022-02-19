@@ -7,6 +7,12 @@
   const TETRIS_WIDTH = 12;
   const TETRIS_HEIGHT = 21;
   const TETROMINO_SIZE = 4;
+  
+  // GUI
+  const CELL_SIZE = 30;
+  const BACKGROUND_COLOR = 'White';
+  const WALL_COLOR = 'Grey';
+  const TETROMINO_COLOR = 'FireBrick';
 
   // tetris board
   var tetris = [
@@ -27,9 +33,9 @@
     '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
     '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
     '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
-    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
-    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
-    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '@', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', '@', ' ', ' ', '@', '@', '#',
+    '#', ' ', ' ', ' ', ' ', '@', '@', '@', ' ', '@', ' ', '#',
     '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'
   ];
   
@@ -95,7 +101,47 @@
     console.log(tetris_str);
   }
   
-  printBoard();
+  // draw tetris board and settled pieces to screen
+  function drawTetris() {
+    // define colors object
+    var colors = {
+      ' ': BACKGROUND_COLOR,
+      '#': WALL_COLOR,
+      '@': TETROMINO_COLOR
+    }
+    
+    // tetris graphics
+    var tetrisHTML = '<table align="center" style="border: 1px solid black;" cellspacing="1"><tbody>'
+    
+    // loop over board rows
+    for (let row = 0; row < TETRIS_HEIGHT; row++) {
+      // append <tr> tag
+      tetrisHTML += '<tr>'
+      
+      // loop over board columns
+      for (let col = 0; col < TETRIS_WIDTH; col++) {
+        // convert row and column coordinates into a square index
+        let square = row * TETRIS_WIDTH + col;
+        
+        // append <td> tag (game board grid)
+        tetrisHTML += '<td width="' + CELL_SIZE + 
+                      'px" height="' + CELL_SIZE +
+                      'px" id="' + square +
+                      '" bgcolor="' + colors[tetris[square]] + '"></td>'
+      }
+      
+      // close <tr> tag
+      tetrisHTML += '</tr>\n'
+    }
+    
+    // close HTML table tag
+    tetrisHTML += '</tbody></table>'
+    
+    // render tetris to browser window
+    document.getElementById('tetris').innerHTML = tetrisHTML;
+  }
+  
+  drawTetris();
 
 </script>
 
