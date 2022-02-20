@@ -1,15 +1,11 @@
 <!-- game graphics element -->
 <div id="tetris"></div>
 
-<!-- GUI buttons to play on touch devices -->
-<>
-
 <!-- TETRIS -->
 <script>
   // game constants
   const TETRIS_WIDTH = 12;
   const TETRIS_HEIGHT = 21;
-  const BLOCK_LENGTH = 10;
   const TETROMINO_SIZE = 4;
   
   // GUI constanst
@@ -20,8 +16,8 @@
 
   // game variables
   var posX = 4;
-  var posY = -1;
-  var currentTetromino = Math.floor(Math.random() * 7);
+  var posY = 3;
+  var currentTetromino = 6;
   var currentShape = 0;
 
   // tetris board
@@ -43,9 +39,9 @@
     '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
     '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
     '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
-    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
-    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
-    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '@', '#',
+    '#', ' ', ' ', ' ', ' ', ' ', '@', ' ', ' ', '@', '@', '#',
+    '#', ' ', ' ', ' ', ' ', '@', '@', '@', ' ', '@', ' ', '#',
     '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'
   ];
   
@@ -168,7 +164,7 @@
         
         // render tetromino to screen
         if (tetrominos[currentTetromino][tetrominoIndex] != ' ')
-          document.getElementById(fitIndex).style.backgroundColor = TETROMINO_COLOR;
+          document.getElementById(fitIndex).style.backgroundColor = 'Green';//TETROMINO_COLOR;
       }
     }
   }
@@ -194,25 +190,6 @@
     return 0
   }
   
-  // settle tetromino down within the tetris board
-  function dropTetromino() {
-    // loop over tetromino's rows
-    for (let row = 0; row < TETROMINO_SIZE; row++) {
-      // loop over tetromino's columns
-      for (let col = 0; col < TETROMINO_SIZE; col++) {
-        // define tetromino's index
-        let tetrominoIndex = rotateTetromino(col, row, currentShape);
-        
-        // define the fit index
-        let fitIndex = (posY * TETRIS_WIDTH + posX + col) + row * TETRIS_WIDTH;
-        
-        // settle down tetromino
-        if (tetrominos[currentTetromino][tetrominoIndex] != ' ')
-          tetris[fitIndex] = tetrominos[currentTetromino][tetrominoIndex];
-      }
-    }
-  }
-  
   // rotate tetromino
   function rotateTetromino(x, y, shape) {
     // pick up a given shape
@@ -236,7 +213,6 @@
       
       case 40: // down arrow
         if (!hitTetromino(posX, posY + 1)) posY++;
-        else dropTetromino();
         break;
       
       case 37: // left arrow
@@ -252,81 +228,11 @@
     drawTetromino();
   }
   
-  // remove blocks
-  function removeBlocks() {
-    // list of row blocks to remove
-    var removedRows = [];
-    
-    // loop over board rows
-    for (let row = 0; row < TETRIS_HEIGHT; row++) {
-      // block counter
-      let block = 0;
-        
-      // loop over board columns
-      for (let col = 0; col < TETRIS_WIDTH; col++) {
-        // convert row and column coordinates into a square index
-        let square = row * TETRIS_WIDTH + col;
-        
-        // consider blocks while stripping tetris board walls
-        if (col > 0 && col < TETRIS_WIDTH - 1)
-          // if there's not an empty space
-          if (tetris[square] == '@') block++;
-      }
-      
-      // found a line to remove
-      if (block == BLOCK_LENGTH) removedRows.push(row);
-    }
-    
-    // move the rest of blocks down
-    for (let rowIndex = 0; rowIndex < removedRows.length; rowIndex++) {        
-      for (let col = 1; col < TETRIS_WIDTH - 1; col++) {
-        for (let shiftRow = removedRows[rowIndex]; shiftRow > 0; shiftRow--) {
-          let shiftSquare = shiftRow * TETRIS_WIDTH + col;
-          
-          // replace current square within a row by the content of the above square
-          tetris[shiftSquare] = tetris[shiftSquare - TETRIS_WIDTH]
-          
-          // clear contents of the one row above square
-          tetris[shiftSquare - TETRIS_WIDTH] = ' ';
-        }
-      }
-    }
-  }
-  
   // main game loop
   function gameLoop() {
-    // tetromino is falling down until hits the bottom
-    if (!hitTetromino(posX, posY + 1)) posY++;
-    else {
-      // settle tetromino within a tetris board
-      dropTetromino();
-      
-      // remove blocks if any
-      removeBlocks();
-      
-      // select next random tetromino
-      currentTetromino = Math.floor(Math.random() * 7);
-      
-      // check if the game is over
-      if (posY == 0) {
-        alert('GAME OVER');
-        return;
-      }
-      
-      // set the position for a new tetromino 
-      posX = 4
-      posY = 0;
-    }
-    
-    // update frame
     drawTetromino();
-    
-    // repeat game loop
     setTimeout(gameLoop, 500);
   }
-  
-
-  
   
   // run tetris
   gameLoop();
