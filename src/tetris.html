@@ -2,10 +2,7 @@
 <div id="tetris"></div>
 
 <!-- GUI buttons to play on touch devices -->
-<button onclick="moveLeft();" style="position:absolute; width: 460px; height: 323px; top: 8px; left: 12px;">LEFT</button>
-<button onclick="moveRotate();" style="position:absolute; width: 460px; height: 323px; top: 340px; left: 12px;">ROTATE</button>
-<button onclick="moveRight();" style="position:absolute; width: 460px; height: 323px; top: 8px; left: 895px;">RIGHT</button>
-<button onclick="moveDown();" style="position:absolute; width: 460px; height: 323px; top: 340px; left: 895px;">DOWN</button>
+<>
 
 <!-- TETRIS -->
 <script>
@@ -228,43 +225,26 @@
   }
   
   // user input controls
-  function moveLeft() {
-    if (!hitTetromino(posX - 1, posY)) posX--;
-  }
-  
-  function moveRight() {
-    if (!hitTetromino(posX + 1, posY)) posX++;
-  }
-  
-  function moveDown() {
-    if (!hitTetromino(posX, posY + 1)) posY++;
-    else dropTetromino();
-  }
-  
-  function moveRotate() {
-    let oldShape = currentShape;
-    if (currentShape < (currentTetromino <= 3 ? 1 : 3)) currentShape++;
-    else currentShape = 0;
-    if (hitTetromino(posX, posY)) currentShape = oldShape;
-  }
-  
-  // keyboard handler
   document.onkeydown = function(event) {
     switch(event.keyCode) {
       case 38: // up arrow
-        moveRotate();
+        let oldShape = currentShape;
+        if (currentShape < (currentTetromino <= 3 ? 1 : 3)) currentShape++;
+        else currentShape = 0;
+        if (hitTetromino(posX, posY)) currentShape = oldShape;
         break;
       
       case 40: // down arrow
-        moveDown();
+        if (!hitTetromino(posX, posY + 1)) posY++;
+        else dropTetromino();
         break;
       
       case 37: // left arrow
-        moveLeft();
+        if (!hitTetromino(posX - 1, posY)) posX--;
         break;
       
       case 39: // right arrow
-        moveRight();
+        if (!hitTetromino(posX + 1, posY)) posX++;
         break;
     }
     
