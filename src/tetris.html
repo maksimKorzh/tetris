@@ -307,6 +307,9 @@
       // select next random tetromino
       currentTetromino = Math.floor(Math.random() * 7);
       
+      // fix nasty glitch
+      if (currentTetromino <= 3) currentShape = Math.floor(Math.random());
+      
       // check if the game is over
       if (posY == 0) {
         alert('GAME OVER');
